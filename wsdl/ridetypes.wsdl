@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:ns1="http://restaurantride.kolinek.org/" name="RideService" targetNamespace="http://restaurantride.kolinek.org/">
+  <wsdl:types>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://restaurantride.kolinek.org/" elementFormDefault="unqualified" targetNamespace="http://restaurantride.kolinek.org/" version="1.0">
+
+  <xs:element name="reserveRide" type="tns:reserveRide"/>
+
+  <xs:element name="reserveRideResponse" type="tns:reserveRideResponse"/>
+
+  <xs:complexType name="reserveRide">
+    <xs:sequence>
+      <xs:element name="arg0" type="xs:int"/>
+      <xs:element minOccurs="0" name="arg1" type="xs:dateTime"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="reserveRideResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+</xs:schema>
+  </wsdl:types>
+  <wsdl:message name="reserveRide">
+    <wsdl:part element="ns1:reserveRide" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:message name="reserveRideResponse">
+    <wsdl:part element="ns1:reserveRideResponse" name="parameters">
+    </wsdl:part>
+  </wsdl:message>
+  <wsdl:portType name="RideService">
+    <wsdl:operation name="reserveRide">
+      <wsdl:input message="ns1:reserveRide" name="reserveRide">
+    </wsdl:input>
+      <wsdl:output message="ns1:reserveRideResponse" name="reserveRideResponse">
+    </wsdl:output>
+    </wsdl:operation>
+  </wsdl:portType>
+</wsdl:definitions>

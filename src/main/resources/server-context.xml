@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:jaxws="http://cxf.apache.org/jaxws"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+		http://cxf.apache.org/core
+	http://cxf.apache.org/schemas/core.xsd
+		http://cxf.apache.org/jaxws
+	http://cxf.apache.org/schemas/jaxws.xsd
+		http://camel.apache.org/schema/spring
+	http://camel.apache.org/schema/spring/camel-spring-2.8.2.xsd
+">
+
+    <jaxws:endpoint id="DinnerServiceHTTP" 
+		xmlns:dinner="http://restaurant-orchestration.kolinek.org"
+		serviceName="dinner:DinnerService" 
+		endpointName="dinner:DinnerServiceEndpoint"
+		implementor="#dinnerServiceBean"
+    	address="http://localhost:9005/dinner">
+		<jaxws:features>
+			<bean class="org.apache.cxf.feature.LoggingFeature" />
+		</jaxws:features>
+	</jaxws:endpoint>
+	
+	<bean name="dinnerServiceBean" class="org.kolinek.restaurantorchestration.impl.DinnerServiceImpl">
+		<property name="datatypeFactory" ref="datatypeFactory" />
+		<property name="reserv" ref="reserv" />
+		<property name="payment" ref="payment" />
+		<property name="ride" ref="ride" />
+		<property name="order" ref="order" />
+	</bean>
+	
+	<bean name="datatypeFactory" class="javax.xml.datatype.DatatypeFactory" factory-method="newInstance" />
+	
+	<jaxws:client id="order"         
+                serviceClass="org.kolinek.restaurantorder.OrderService"
+                address="http://localhost:9001/order" />
+
+	<jaxws:client id="payment"
+		xmlns:widget="http://restaurant-payment.kolinek.org/"
+		serviceName="widget:WidgetService"
+		endpointName="widget:WidgetServiceEndpoint" address="jms://"
+		serviceClass="org.kolinek.restaurantpayment.PaymentService">
+		<jaxws:features>
+			<bean class="org.apache.cxf.transport.jms.JMSConfigFeature">
+	    		<property name="jmsConfig" ref="amqJmsConfigPayment"/>
+			</bean>
+		</jaxws:features>
+	</jaxws:client>
+
+	<!-- A config for Apache ActiveMQ -->
+	<bean id="amqJmsConfigPayment" class="org.apache.cxf.transport.jms.JMSConfiguration">
+    	<property name="connectionFactory" ref="amqJmsConnectionFactory" />
+		<property name="targetDestination" value="PaymentService.Entry" />
+		<property name="pubSubDomain" value="false" />
+	</bean>
+		
+	<bean id="amqJmsConnectionFactory" class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL" value="tcp://localhost:61616" />
+	</bean>
+	
+	<jaxws:client id="reserv" serviceClass="org.kolinek.restaurant_reservation.ReservationService"
+		address="http://localhost:9002/reservation"
+		/>
+	
+	<jaxws:client id="ride"
+		xmlns:ride="http://restaurant-ride.kolinek.org"
+		serviceName="ride:RideService"
+		endpointName="ride:RideServiceEndpoint" address="camel://direct:RideServiceClient"
+		serviceClass="org.kolinek.restaurantride.RideService">
+	</jaxws:client>
+	
+		<!-- Camel transport for CXF -->
+	<bean class="org.apache.camel.component.cxf.transport.CamelTransportFactory">
+		<property name="bus" ref="cxf" />
+		<property name="camelContext" ref="camelContext" />
+		<property name="transportIds">
+			<list>
+				<value>http://cxf.apache.org/transports/camel</value>
+			</list>
+		</property>
+	</bean>
+
+	<camelContext id="camelContext" trace="true" xmlns="http://camel.apache.org/schema/spring">
+		<route>
+			<from uri="direct:RideServiceClient" />
+			<convertBodyTo type="java.lang.String" charset="utf-8"/>
+			<to uri="log:org.kolinek.restaurantride.in" />
+			<to uri="jms://topic:RideService.Entry" />
+			<to uri="log:org.kolinek.restaurantride.out" />
+		</route>
+	</camelContext>
+	
+    <bean id="jms" class="org.apache.camel.component.jms.JmsComponent">
+		<property name="connectionFactory" ref="amqJmsConnectionFactory" />
+	</bean>
+
+</beans>

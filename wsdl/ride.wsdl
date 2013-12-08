@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://restaurant-ride.kolinek.org" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://restaurantride.kolinek.org/" name="RideService" targetNamespace="http://restaurant-ride.kolinek.org">
+  <wsdl:import location="ridetypes.wsdl" namespace="http://restaurantride.kolinek.org/">
+    </wsdl:import>
+  <wsdl:binding name="RideServiceSoapBinding" type="ns1:RideService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="reserveRide">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="reserveRide">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="reserveRideResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="RideService">
+    <wsdl:port binding="tns:RideServiceSoapBinding" name="RideServiceEndpoint">
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

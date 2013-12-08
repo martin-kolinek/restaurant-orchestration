@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions name="ReservationService" targetNamespace="http://restaurant-reservation.kolinek.org/"
+	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+	xmlns:tns="http://restaurant-reservation.kolinek.org/"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+	<wsdl:types>
+		<xsd:schema attributeFormDefault="unqualified" elementFormDefault="unqualified" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+			targetNamespace="http://restaurant-reservation.kolinek.org/"
+			xmlns:tns="http://restaurant-reservation.kolinek.org/">
+			<xsd:element name="reserve" type="tns:reservation"/>
+
+			<xsd:complexType name="reservation">
+				<xsd:sequence>
+					<xsd:element name="numberOfPeople" type="xsd:int" />
+					<xsd:element name="date" type="xsd:dateTime" />
+					<xsd:element name="duration" type="xsd:duration" />
+				</xsd:sequence>
+			</xsd:complexType>
+
+			<xsd:element name="reserveResponse" type="xsd:boolean" />
+		</xsd:schema>
+	</wsdl:types>
+
+	<wsdl:message name="reserve">
+		<wsdl:part name="parameters" element="tns:reserve"/>
+	</wsdl:message>
+	<wsdl:message name="reserveResponse">
+		<wsdl:part name="parameters" element="tns:reserveResponse"/>
+	</wsdl:message>
+	<wsdl:portType name="ReservationService">
+		<wsdl:operation name="reserve">
+			<wsdl:input name="reserve" message="tns:reserve"/>
+			<wsdl:output name="reserveResponse" message="tns:reserveResponse"/>
+		</wsdl:operation>
+	</wsdl:portType>
+	<wsdl:binding name="ReservationServiceSoapBinding"
+		type="tns:ReservationService">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http"
+			/>
+		<wsdl:operation name="reserve">
+			<soap:operation soapAction="" style="document" />
+			<wsdl:input name="reserve">
+				<soap:body use="literal" />
+			</wsdl:input>
+			<wsdl:output name="reserveResponse">
+				<soap:body use="literal" />
+			</wsdl:output>
+		</wsdl:operation>
+	</wsdl:binding>
+	<wsdl:service name="ReservationService">
+		<wsdl:port name="ReservationServicePort" binding="tns:ReservationServiceSoapBinding">
+			<soap:address location="http://localhost:9010/account" />
+		</wsdl:port>
+	</wsdl:service>
+
+</wsdl:definitions>

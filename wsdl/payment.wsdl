@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://restaurant-payment.kolinek.org/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns2="http://schemas.xmlsoap.org/soap/http" xmlns:ns1="http://restaurantpayment.kolinek.org/" name="PaymentService" targetNamespace="http://restaurant-payment.kolinek.org/">
+  <wsdl:import location="paymenttypes" namespace="http://restaurantpayment.kolinek.org/">
+    </wsdl:import>
+  <wsdl:binding name="PaymentServiceSoapBinding" type="ns1:PaymentService">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="pay">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="pay">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="payResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="getPrice">
+      <soap:operation soapAction="" style="document"/>
+      <wsdl:input name="getPrice">
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output name="getPriceResponse">
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="PaymentService">
+    <wsdl:port binding="tns:PaymentServiceSoapBinding" name="PaymentServiceEndpoint">
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
